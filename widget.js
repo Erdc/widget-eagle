@@ -277,6 +277,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             
             this.setupLayerToggleDropdown();
 
+            /*
             chilipeppr.load(
                 "#com-chilipeppr-widgetholder-eagle-dispenser", 
                 "http://fiddle.jshell.net/xpix/w7noyp41/show/light/",
@@ -285,6 +286,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                         dispenser.init();
                     });
                 });
+            */
 
             chilipeppr.load(
                "#com-chilipeppr-widgetholder-eagle-pnp", 
