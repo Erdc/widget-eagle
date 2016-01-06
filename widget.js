@@ -275,7 +275,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             $('#com-chilipeppr-widget-eagle .btn-clear').click(this.clearEagleBrd.bind(this));
             
             
-            this.setupLayerToggleDropdown();
+            this.setupLayerToggleDropdown(); 
 
             chilipeppr.load(
                 "#com-chilipeppr-widgetholder-eagle-dispenser", 
