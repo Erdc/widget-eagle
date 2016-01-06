@@ -276,7 +276,25 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             
             
             this.setupLayerToggleDropdown();
-            
+
+            chilipeppr.load(
+                "#com-chilipeppr-widgetholder-eagle-dispenser", 
+                "http://fiddle.jshell.net/xpix/w7noyp41/show/light/",
+                function () {
+                    cprequire(["inline:com-chilipeppr-widget-eagle-dispenser"], function (dispenser) {
+                        dispenser.init();
+                    });
+                });
+
+            chilipeppr.load(
+               "#com-chilipeppr-widgetholder-eagle-pnp", 
+               "https://raw.githubusercontent.com/xpix/widget-eagle-pickandplace/master/auto-generated-widget.html",
+                function () {
+                    cprequire(["inline:com-chilipeppr-widget-eagle-pickandplace"], function (pnp) {
+                        console.log('PNP Obj: ', pnp);
+                        pnp.init();
+                    });
+                });
 
             console.log(this.name + " done loading.");
         },
