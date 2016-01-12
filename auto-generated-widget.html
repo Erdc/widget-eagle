@@ -2966,6 +2966,12 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
                     
                     var ud = obj.object.userData;
+
+                    if(ud.onMouseOverCallback !== undefined && $.type(ud.onMouseOverCallback) == 'function'){
+                        console.log('Found onMouseOverCallback in userData, obj');
+                        return ud.onMouseOverCallback(event, obj);
+                    }
+
                     if (!('type' in ud)) {
                         // we found this thru recursion, go to parent
                         // to get userData
