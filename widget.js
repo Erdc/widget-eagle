@@ -2991,9 +2991,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 }
             } else {
                 // hide info area
-
                 this.infoArea.addClass('hidden');
                 this.infoSignalArea.addClass('hidden');
+                this.infoPlugin.addClass('hidden');
             }
 
         },
