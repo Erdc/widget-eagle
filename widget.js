@@ -2845,6 +2845,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                     console.log( 'Get Object:', obj );
                     if(ud.onMouseOverCallback !== undefined && $.type(ud.onMouseOverCallback) == 'function'){
                         console.log('Found onMouseOverCallback in userData', ud);
+                        ud.x = x; ud.y = y;
                         return ud.onMouseOverCallback(event, obj);
                     }
 
