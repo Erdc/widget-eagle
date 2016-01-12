@@ -286,7 +286,6 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                         dispenser.init();
                     });
                 });
-            */
 
             chilipeppr.load(
                "#com-chilipeppr-widgetholder-eagle-pnp", 
@@ -297,6 +296,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                         pnp.init();
                     });
                 });
+            */
 
             console.log(this.name + " done loading.");
         },
