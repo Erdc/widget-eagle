@@ -287,6 +287,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                     });
                 });
 
+            */
+            // Load Pick and Place Plugin
             chilipeppr.load(
                "#com-chilipeppr-widgetholder-eagle-pnp", 
                "https://raw.githubusercontent.com/xpix/widget-eagle-pickandplace/master/auto-generated-widget.html",
@@ -296,7 +298,6 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                         pnp.init();
                     });
                 });
-            */
 
             console.log(this.name + " done loading.");
         },
