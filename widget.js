@@ -2842,9 +2842,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                     
                     var ud = obj.object.userData;
                     console.log( 'Get Object:', obj );
-                    if(ud.onMouseOverCallback !== undefined && $.type(obj.onMouseOverCallback) == 'function'){
-                        console.log('Found onMouseOverCallback in userData', obj);
-                        return obj.onMouseOverCallback(event, obj);
+                    if(ud.onMouseOverCallback !== undefined && $.type(ud.onMouseOverCallback) == 'function'){
+                        console.log('Found onMouseOverCallback in userData', ud);
+                        return ud.onMouseOverCallback(event, obj);
                     }
 
                     if (!('type' in ud)) {
