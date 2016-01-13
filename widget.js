@@ -2993,7 +2993,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 // hide info area
                 this.infoArea.addClass('hidden');
                 this.infoSignalArea.addClass('hidden');
-                this.infoPlugin.addClass('hidden');
+                if(this.infoPlugin !== undefined)
+                    this.infoPlugin.addClass('hidden');
             }
 
         },
