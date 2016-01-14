@@ -276,29 +276,32 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             
             
             this.setupLayerToggleDropdown();
-
-            /*
+            
+            var that = this;
+            
+            // Load Solderpaste dispenser plugin
             chilipeppr.load(
-                "#com-chilipeppr-widgetholder-eagle-dispenser", 
-                "http://fiddle.jshell.net/xpix/w7noyp41/show/light/",
+                "#com-chilipeppr-widgetholder-eagle-dispense", 
+                "https://raw.githubusercontent.com/xpix/widget-eagle-dispense/master/auto-generated-widget.html",
                 function () {
-                    cprequire(["inline:com-chilipeppr-widget-eagle-dispenser"], function (dispenser) {
-                        dispenser.init();
+                    cprequire(["inline:com-chilipeppr-widget-eagle-dispense"], function (dispenser) {
+                        console.log('Init plugin com-chilipeppr-widget-eagle-dispense', dispenser);
+                        dispenser.init(that);
                     });
                 });
 
-            */
             // Load Pick and Place Plugin
-            chilipeppr.load(
-               "#com-chilipeppr-widgetholder-eagle-pnp", 
-               "https://raw.githubusercontent.com/xpix/widget-eagle-pickandplace/master/auto-generated-widget.html",
-                function () {
-                    cprequire(["inline:com-chilipeppr-widget-eagle-pickandplace"], function (pnp) {
-                        console.log('PNP Obj: ', pnp);
-                        pnp.init();
+            setTimeout(function() {
+                chilipeppr.load(
+                   "#com-chilipeppr-widgetholder-eagle-pnp", 
+                   "https://raw.githubusercontent.com/xpix/widget-eagle-pickandplace/master/auto-generated-widget.html",
+                    function () {
+                        cprequire(["inline:com-chilipeppr-widget-eagle-pickandplace"], function (pnp) {
+                            console.log('Init plugin com-chilipeppr-widget-eagle-pickandplace', pnp);
+                            pnp.init(that);
+                        });
                     });
-                });
-
+            }, 2000);
             console.log(this.name + " done loading.");
         },
         setupLayerToggleDropdown: function() {
