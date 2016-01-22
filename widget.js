@@ -291,17 +291,15 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 });
 
             // Load Pick and Place Plugin
-            setTimeout(function() {
-                chilipeppr.load(
-                   "#com-chilipeppr-widgetholder-eagle-pnp", 
-                   "https://raw.githubusercontent.com/xpix/widget-eagle-pickandplace/master/auto-generated-widget.html",
-                    function () {
-                        cprequire(["inline:com-chilipeppr-widget-eagle-pickandplace"], function (pnp) {
-                            console.log('Init plugin com-chilipeppr-widget-eagle-pickandplace', pnp);
-                            pnp.init(that);
-                        });
+            chilipeppr.load(
+               "#com-chilipeppr-widgetholder-eagle-pnp", 
+               "https://raw.githubusercontent.com/xpix/widget-eagle-pickandplace/master/auto-generated-widget.html",
+                function () {
+                    cprequire(["inline:com-chilipeppr-widget-eagle-pickandplace"], function (pnp) {
+                        console.log('Init plugin com-chilipeppr-widget-eagle-pickandplace', pnp);
+                        pnp.init(that);
                     });
-            }, 2000);
+                });
             console.log(this.name + " done loading.");
         },
         setupLayerToggleDropdown: function() {
@@ -952,6 +950,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
         },
         exportGcodeMilling:function(){
             var g = '';
+
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Milling</b> G-Code", "Rendering Isolation g-code mills's.", 1 * 1000);
+
             this.paths.forEach(function(path) {
                 // move to clearance
                 g += "G0 Z" + this.clearanceHeight + "\n";
@@ -1000,6 +1001,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             if(! $('#com-chilipeppr-widget-eagle .drill-markholes').is(':checked'))
                return g;
 
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Mark vias</b> G-Code", "Rendering marks for vias's.", 1 * 1000);
+
+
             // Drilling, first sort to drill diameter and change tool to first diameter
             g += "(------ MARK VIAS -------)\n";
             for ( diameter in this.sortObjByKey(this.drillVias) ){
@@ -1020,6 +1024,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             if(! $('#com-chilipeppr-widget-eagle .drill-markholes').is(':checked'))
                return g;
 
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Mark pad's</b> G-Code", "Rendering marks for pad's.", 1 * 1000);
+
             // Drilling, first sort to drill diameter and change tool to first diameter
             g += "(------ MARK PADS -------)\n";
             for ( diameter in this.sortObjByKey(this.drillPads) ){
@@ -1039,6 +1045,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             if(! $('#com-chilipeppr-widget-eagle .use-drilling').is(':checked'))
                return g;
+
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Drill via's</b> G-Code", "Rendering drills for via's.", 1 * 1000);
 
             // Drilling, first sort to drill diameter and change tool to first diameter
             g += "(------ DRILLING VIAS -------)\n";
@@ -1062,6 +1070,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             if(! $('#com-chilipeppr-widget-eagle .use-drilling').is(':checked'))
                return g;
+
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Drill pad's</b> G-Code", "Rendering drills for pad's.", 1 * 1000);
 
             var that = this;
             g += "(------ DRILLING PADS -------)\n";
@@ -1089,7 +1099,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             var that = this;
             
             var diaOfEndmill = $('.dimension-mill-diameter').val();
-            
+
+            chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Dimension</b> G-Code", "Rendering Dimension g-code cut's.", 1 * 1000);
+
             // DIMENSION Milling
             g += "(------ DIMENSION Milling -------)\n";
             g += "M5 (spindle off)\n";
