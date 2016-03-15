@@ -1202,7 +1202,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             if(this.PCBHolder == false || lastpoint.X == null)
                 return defmove;            
                 
-            // PCBHolderCount for one distance: 1 // 2 // 3 ... 
+            // PCBHolderCount for one distance: 1 // 2 // 3 ... .
             // PCBHolderLength: 1 mmm  
             var distance = { 
                 x: point.X - lastpoint.X,
