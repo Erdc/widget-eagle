@@ -611,6 +611,19 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 console.log("evt:", evt);
                 that.feedRateDimensions = evt.currentTarget.valueAsNumber;
             });
+            el.find('.pcbholder').change(function(evt) {
+                console.log("evt:", evt);
+                that.PCBHolder = evt.currentTarget.value;
+            });
+            el.find('.pcbholder-length').change(function(evt) {
+                console.log("evt:", evt);
+                that.PCBHolderLength = evt.currentTarget.valueAsNumber;
+            });
+            el.find('.pcbholder-count').change(function(evt) {
+                console.log("evt:", evt);
+                that.PCBHolderCount = evt.currentTarget.valueAsNumber;
+            });
+            
             el.find('.dispenser-axis').change(function(evt) {
                 console.log("evt:", evt);
                 that.dispenserAxis = evt.currentTarget.valueAsNumber;
@@ -623,6 +636,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 console.log("evt:", evt);
                 that.cannulaDiameter = evt.currentTarget.valueAsNumber;
             });
+            
+            el.find('input').trigger('change');
         },
         calcPasses: function(el) {
             // calc passes
@@ -1317,9 +1332,11 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // Measure distance between points and 
             // decide to set a holder or not
 
-            this.PCBHolder      = true;
-            this.PCBHolderCount = 1; 
-            this.PCBHolderLength= 1; // mm
+            // this.PCBHolder      = true;
+            // this.PCBHolderCount = 1; 
+            // this.PCBHolderLength= 1; // mm
+
+console.log('exportPCBDimensionHolder', this.PCBHolder, this.PCBHolderLength, this.PCBHolderCount);
 
             // User data:
             // PCBholder (true:false)
@@ -1327,7 +1344,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             if(this.PCBHolder == false || lastpoint.X == null)
                 return defmove;            
                 
-            // PCBHolderCount for one distance: 1 // 2 // 3 ... 
+            // PCBHolderCount for one distance: 1 // 2 // 3 ...
             // PCBHolderLength: 1 mmm  
             var distance = { 
                 x: point.X - lastpoint.X,
@@ -1367,7 +1384,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 g += "G1 Z" + z + "\n";             // ... plunge
             }
 
-console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
+// console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
 
             return g;
         },
@@ -1399,7 +1416,6 @@ console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
             var i = 100;
             this.addGcode(i, this.exportGcodeHeader()     );
             i += 100;
-/*
             this.addGcode(i, this.exportGcodeMilling()    );
             i += 100;
             this.addGcode(i, this.exportGcodeMarkVias()   );
@@ -1410,7 +1426,6 @@ console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
             i += 100;
             this.addGcode(i, this.exportGcodeDrillPads()  );
             i += 100;
-*/
             this.addGcode(i, this.exportGcodeDimensions() );
             i = 2000;
             this.addGcode(i, this.exportGcodeFooter()      ); // let space for additional gcode entrys
@@ -6220,6 +6235,17 @@ EagleCanvas.prototype.mirrorLayer = function (layerIdx) {
                     </div>
                     <p style="margin-bottom:0px;">Passes <code><span class="dimension-passes  highlight"><i>4</i></span></code> Last Pass <code><span class="dimension-lastpass highlight"><i>-0.2</i>mm</span></code></p>
                     <p class="descriptive-text">The amount to step down in the Z axis for each pass of cutting out your board dimensions. Default value is -0.5mm. </p>
+
+                    Create PCB Holders <input type="checkbox" class="pcbholder" checked>
+                    <div class="input-group">
+                        <input class="form-control pcbholder-length" type="number" placeholder="Pcbholder length in mm" value="1" />
+                        <div class="input-group-addon">mm</div>
+                    </div>
+                    <div class="input-group">
+                        <input class="form-control pcbholder-count" type="number" placeholder="Count of pcb holder on every side" value="1" />
+                        <div class="input-group-addon">pcs</div>
+                    </div>
+                    <p class="descriptive-text">Count of pcb holder on every side.</p>
 
                     Feedrate for Cutting Dimensions
                     <div class="input-group">

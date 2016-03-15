@@ -486,6 +486,19 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 console.log("evt:", evt);
                 that.feedRateDimensions = evt.currentTarget.valueAsNumber;
             });
+            el.find('.pcbholder').change(function(evt) {
+                console.log("evt:", evt);
+                that.PCBHolder = evt.currentTarget.value;
+            });
+            el.find('.pcbholder-length').change(function(evt) {
+                console.log("evt:", evt);
+                that.PCBHolderLength = evt.currentTarget.valueAsNumber;
+            });
+            el.find('.pcbholder-count').change(function(evt) {
+                console.log("evt:", evt);
+                that.PCBHolderCount = evt.currentTarget.valueAsNumber;
+            });
+            
             el.find('.dispenser-axis').change(function(evt) {
                 console.log("evt:", evt);
                 that.dispenserAxis = evt.currentTarget.valueAsNumber;
@@ -498,6 +511,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 console.log("evt:", evt);
                 that.cannulaDiameter = evt.currentTarget.valueAsNumber;
             });
+            
+            el.find('input').trigger('change');
         },
         calcPasses: function(el) {
             // calc passes
@@ -1192,9 +1207,11 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // Measure distance between points and 
             // decide to set a holder or not
 
-            this.PCBHolder      = true;
-            this.PCBHolderCount = 1; 
-            this.PCBHolderLength= 1; // mm
+            // this.PCBHolder      = true;
+            // this.PCBHolderCount = 1; 
+            // this.PCBHolderLength= 1; // mm
+
+console.log('exportPCBDimensionHolder', this.PCBHolder, this.PCBHolderLength, this.PCBHolderCount);
 
             // User data:
             // PCBholder (true:false)
@@ -1242,7 +1259,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 g += "G1 Z" + z + "\n";             // ... plunge
             }
 
-console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
+// console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
 
             return g;
         },
@@ -1274,7 +1291,6 @@ console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
             var i = 100;
             this.addGcode(i, this.exportGcodeHeader()     );
             i += 100;
-/*
             this.addGcode(i, this.exportGcodeMilling()    );
             i += 100;
             this.addGcode(i, this.exportGcodeMarkVias()   );
@@ -1285,7 +1301,6 @@ console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
             i += 100;
             this.addGcode(i, this.exportGcodeDrillPads()  );
             i += 100;
-*/
             this.addGcode(i, this.exportGcodeDimensions() );
             i = 2000;
             this.addGcode(i, this.exportGcodeFooter()      ); // let space for additional gcode entrys
