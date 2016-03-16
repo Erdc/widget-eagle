@@ -486,10 +486,6 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 console.log("evt:", evt);
                 that.feedRateDimensions = evt.currentTarget.valueAsNumber;
             });
-            el.find('.pcbholder').change(function(evt) {
-                console.log("evt:", evt);
-                that.PCBHolder = evt.currentTarget.value;
-            });
             el.find('.pcbholder-length').change(function(evt) {
                 console.log("evt:", evt);
                 that.PCBHolderLength = evt.currentTarget.valueAsNumber;
@@ -1207,16 +1203,15 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // Measure distance between points and 
             // decide to set a holder or not
 
-            // this.PCBHolder      = true;
             // this.PCBHolderCount = 1; 
             // this.PCBHolderLength= 1; // mm
 
-console.log('exportPCBDimensionHolder', this.PCBHolder, this.PCBHolderLength, this.PCBHolderCount);
+console.log('exportPCBDimensionHolder', this.PCBHolderLength, this.PCBHolderCount);
 
             // User data:
             // PCBholder (true:false)
             var defmove = "G1 X" + point.X + " Y" + point.Y + "\n";
-            if(this.PCBHolder == false || lastpoint.X == null)
+            if(this.PCBHolderCount == 0 || lastpoint.X == null)
                 return defmove;            
                 
             // PCBHolderCount for one distance: 1 // 2 // 3 ...
@@ -1229,6 +1224,10 @@ console.log('exportPCBDimensionHolder', this.PCBHolder, this.PCBHolderLength, th
             
             distance.segment.x = distance.x/(this.PCBHolderCount+1);
             distance.segment.y = distance.y/(this.PCBHolderCount+1);
+
+            // ony straigth lines
+            if(distance.x != 0 && distance.y != 0)
+                return defmove;
 
             if(Math.abs(distance.segment.x) < this.PCBHolderLength && Math.abs(distance.segment.y) < this.PCBHolderLength*3)
                 return defmove;            
