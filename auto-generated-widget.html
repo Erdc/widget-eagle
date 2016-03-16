@@ -1328,13 +1328,10 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // Measure distance between points and 
             // decide to set a holder or not
 
+            // User data:
             // this.PCBHolderCount = 1; 
             // this.PCBHolderLength= 1; // mm
 
-console.log('exportPCBDimensionHolder', this.PCBHolderLength, this.PCBHolderCount);
-
-            // User data:
-            // PCBholder (true:false)
             var defmove = "G1 X" + point.X + " Y" + point.Y + "\n";
             if(this.PCBHolderCount == 0 || lastpoint.X == null)
                 return defmove;            
@@ -1382,8 +1379,6 @@ console.log('exportPCBDimensionHolder', this.PCBHolderLength, this.PCBHolderCoun
                 g += "G0 X" + x + " Y" + y + "\n";  // jump and ...
                 g += "G1 Z" + z + "\n";             // ... plunge
             }
-
-// console.log('exportPCBDimensionHolder: ', lastpoint, point, distance, g);
 
             return g;
         },
