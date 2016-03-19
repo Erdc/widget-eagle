@@ -1231,20 +1231,19 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             var g = '',x = lastpoint.X, y = lastpoint.Y;
             for(var c=0;c < this.PCBHolderCount;c++){
-                // TODO: check diameter of tool (this.PCBHolderLength +/- radiusEndmill) 
                 if(Math.abs(distance.segment.x) > this.PCBHolderLength)
-                    x += distance.segment.x - (this.PCBHolderLength - radiusEndmill);
+                    x += (distance.segment.x - (this.PCBHolderLength + radiusEndmill));
                 else
                     x += distance.segment.x;
 
                 if(Math.abs(distance.segment.y) > this.PCBHolderLength)
-                    y += distance.segment.y - (this.PCBHolderLength - radiusEndmill);
+                    y += (distance.segment.y - (this.PCBHolderLength + radiusEndmill));
                 else
                     y += distance.segment.y;
                     
                 g += "G1 X" + x + " Y" + y + "\n";
                 // go up ..     
-                g += "G0 Z" + (z + Math.abs(this.stepDownDimensions)) + "\n";
+                g += "G0 Z" + this.clearanceHeight + "\n";
 
                 // move to next plunge
                 if(Math.abs(distance.segment.x) > this.PCBHolderLength)
@@ -1252,7 +1251,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 if(Math.abs(distance.segment.y) > this.PCBHolderLength)
                     (distance.segment.y < 0 ? y -= (this.PCBHolderLength + radiusEndmill) : y += (this.PCBHolderLength + radiusEndmill));
 
-                g += "G0 X" + x + " Y" + y + "\n";  // jump and ...
+                g += "G1 X" + x + " Y" + y + "\n";  // jump and ...
                 g += "G1 Z" + z + "\n";             // ... plunge
             }
 
