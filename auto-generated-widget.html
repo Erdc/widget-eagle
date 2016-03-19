@@ -1308,7 +1308,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                         //console.log("dimension mill: skipping pt:", pt);
                     } else {
                         //console.log("dimension mill: adding pt:", pt);
-                        g += that.exportPCBDimensionHolder(pt, lastPt, newZ);
+                        g += that.exportPCBDimensionHolder(pt, lastPt, newZ, diaOfEndmill/2);
                     }
                     lastPt = pt;
                 });
@@ -1323,7 +1323,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             console.groupEnd();
             return g;
         },
-        exportPCBDimensionHolder: function(point, lastpoint, z){
+        exportPCBDimensionHolder: function(point, lastpoint, z, radiusEndmill){
             // Set pcb holder if user like
             // Measure distance between points and 
             // decide to set a holder or not
@@ -1356,13 +1356,14 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             var g = '',x = lastpoint.X, y = lastpoint.Y;
             for(var c=0;c < this.PCBHolderCount;c++){
+                // TODO: check diameter of tool (this.PCBHolderLength +/- radiusEndmill) 
                 if(Math.abs(distance.segment.x) > this.PCBHolderLength)
-                    x += distance.segment.x - this.PCBHolderLength;
+                    x += distance.segment.x - (this.PCBHolderLength - radiusEndmill);
                 else
                     x += distance.segment.x;
 
                 if(Math.abs(distance.segment.y) > this.PCBHolderLength)
-                    y += distance.segment.y - this.PCBHolderLength;
+                    y += distance.segment.y - (this.PCBHolderLength - radiusEndmill);
                 else
                     y += distance.segment.y;
                     
@@ -1372,9 +1373,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
                 // move to next plunge
                 if(Math.abs(distance.segment.x) > this.PCBHolderLength)
-                    (distance.segment.x < 0 ? x -= this.PCBHolderLength : x += this.PCBHolderLength);
+                    (distance.segment.x < 0 ? x -= (this.PCBHolderLength + radiusEndmill) : x += (this.PCBHolderLength + radiusEndmill));
                 if(Math.abs(distance.segment.y) > this.PCBHolderLength)
-                    (distance.segment.y < 0 ? y -= this.PCBHolderLength : y += this.PCBHolderLength);
+                    (distance.segment.y < 0 ? y -= (this.PCBHolderLength + radiusEndmill) : y += (this.PCBHolderLength + radiusEndmill));
 
                 g += "G0 X" + x + " Y" + y + "\n";  // jump and ...
                 g += "G1 Z" + z + "\n";             // ... plunge
