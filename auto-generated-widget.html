@@ -1086,6 +1086,9 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
         },
         exportGcodeMilling:function(){
             var g = '';
+            g += "M5 (spindle off)\n";
+            g += "T" + this.toolCount++ + " M6 (set tool to mill isolate signals)\n";
+            g += "M3 (spindle on)\n";
 
             chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Milling</b> G-Code", "Rendering Isolation g-code mills's.", 1 * 1000);
 
