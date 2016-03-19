@@ -1243,7 +1243,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                     
                 g += "G1 X" + x + " Y" + y + "\n";
                 // go up ..     
-                g += "G0 Z" + this.clearanceHeight + "\n";
+                g += "G0 Z" + (z + Math.abs(this.stepDownDimensions)) + "\n";
 
                 // move to next plunge
                 if(Math.abs(distance.segment.x) > this.PCBHolderLength)
@@ -1285,6 +1285,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             var i = 100;
             this.addGcode(i, this.exportGcodeHeader()     );
             i += 100;
+            this.addGcode(i, this.exportGcodeDimensions() );
+            i += 100;
             this.addGcode(i, this.exportGcodeMilling()    );
             i += 100;
             this.addGcode(i, this.exportGcodeMarkVias()   );
@@ -1294,8 +1296,6 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             this.addGcode(i, this.exportGcodeDrillVias()  );
             i += 100;
             this.addGcode(i, this.exportGcodeDrillPads()  );
-            i += 100;
-            this.addGcode(i, this.exportGcodeDimensions() );
             i = 2000;
             this.addGcode(i, this.exportGcodeFooter()      ); // let space for additional gcode entrys
 
