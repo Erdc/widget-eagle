@@ -207,6 +207,20 @@
                         </ul>
                     </p>
 
+                    Zero position after homing
+                    <div class="input-group">
+                        <div class="input-group-addon">X-Axis:</div>
+                        <input class="form-control XZero" type="number" placeholder="X-Axis position" value="0" />
+                        <div class="input-group-addon">mm</div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-addon">Y-Axis:</div>
+                        <input class="form-control YZero" type="number" placeholder="Y-Axis position" value="0" />
+                        <div class="input-group-addon">mm</div>
+                    </div>
+                    <p class="descriptive-text">The zero position after homing. The machine use this a center point in your WCS System. That's the startpoint to mill your PCB.</p>
+
+
                     Feedrate for Milling Traces
                     <div class="input-group">
                         <input class="form-control trace-fr" type="number" placeholder="Feedrate" value="80" />
