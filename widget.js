@@ -409,11 +409,13 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 console.log("evt:", evt);
                 that.XZero = evt.currentTarget.valueAsNumber;
                 that.options.XZero = that.XZero;
+                that.saveOptionsLocalStorage();
             });
-            el.find('.y-zero-position').change(function(evt) {
+            el.find('.YZero').change(function(evt) {
                 console.log("evt:", evt);
                 that.YZero = evt.currentTarget.valueAsNumber;
                 that.options.YZero = that.YZero;
+                that.saveOptionsLocalStorage();
             });
 
             el.find('.drill-feedrate').change(function(evt) {
@@ -962,9 +964,43 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             return result;
         },
         setZeroPosition: function(){
-            var x = this.XZero, 
-                y = this.YZero;
-            return "G10 L2 P1 X" + x + " Y" + y + "\n"
+            var x = this.XZero; 
+            var y = this.YZero;
+            return "G10 L2 P1 X" + x + " Y" + y + " (Set absolute center of machine)\n";
+        },
+        toolChangePosition: function(){
+            // move to the center/front of machine for toolchange
+            var x = 0; 
+            var y = (5 - this.YZero);
+            return "G0 Z15 X" + x + " Y" + y + " (Move to tool change position)\n";
+        },
+        endPosition: function(){
+            // move to the center/back of machine for toolchange
+            var x = 0; 
+            var y = this.YZero;
+            return "G0 Z15 X" + x + " Y" + y + " (Move to tool end position)\n";
+        },
+        touchProbe: function(){
+            var diaOfEndmill = this.millDiameter;
+            var calcDia = diaOfEndmill*2;
+            var g = "(Move to touchprobe pos)\n";
+            g += "G0 X-" + calcDia + " Y-" + calcDia + "\n";
+            g += "G38.2 Z-20 F22\n";
+
+            // TODO: maybe tinyg don't support absolute coordinates set (G10 L20)?
+            g += "G28.3 X" + calcDia + " Y" + calcDia + " Z0\n"; 
+
+            g += "G0 Z" + this.clearanceHeight + "\n";
+            return g;
+        },
+        toolChange: function(comment, toolnumber){
+            var g = '';
+            g += "M5 (spindle off)\n";
+            g += this.toolChangePosition();
+            g += "M6 (" + comment + ")\n"
+            g += this.touchProbe();
+            g += "M3 (spindle on)\n";
+            return g;
         },
         exportGcodeHeader:function(){
             var g = '';
@@ -973,16 +1009,11 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             g += "G90 (abs mode)\n";
             g += "G28.2 X0 Y0 (Home the machine)\n";
             g += this.setZeroPosition();
-            g += "G90 (abs mode)\n";
-            g += "TO M6 (set tool)\n"
-            g += "M3 (spindle on)\n";
             return g;
         },
         exportGcodeMilling:function(){
             var g = '';
-            g += "M5 (spindle off)\n";
-            g += "T" + this.toolCount++ + " M6 (set tool to mill isolate signals)\n";
-            g += "M3 (spindle on)\n";
+            g += this.toolChange('set tool to mill isolate signals --url:https://raw.githubusercontent.com/xpix/widget-eagle/master/helpers/tc_signalmill.html--');
 
             chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Milling</b> G-Code", "Rendering Isolation g-code mills's.", 1 * 1000);
 
@@ -1084,9 +1115,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // Drilling, first sort to drill diameter and change tool to first diameter
             g += "(------ DRILLING VIAS -------)\n";
             for ( diameter in this.sortObjByKey(this.drillVias) ){
-               g += "M5 (spindle off)\n";
-               g += "T" + this.toolCount++ + " M6 (set tool to drill with diameter " + diameter + ")\n";
-               g += "M3 (spindle on)\n";
+               g += this.toolChange('set tool to drill with diameter ' + diameter);
                g += "F" + this.drillFeedrate + "\n"; 
                this.drillVias[diameter].forEach(function(dvector){
                      g += "G0 Z" + that.clearanceHeight + "\n";
@@ -1112,9 +1141,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                // don't drill holes bigger as max diameter
                if(diameter > that.drillMaxDiameter)
                   break;
-               g += "M5 (spindle off)\n";
-               g += "T" + this.toolCount++ + " M6 (set tool to drill with diameter " + diameter + ")\n";
-               g += "M3 (spindle on)\n";
+               g += this.toolChange('set tool to drill with diameter ' + diameter);
                g += "F" + this.drillFeedrate + "\n"; 
                this.drillPads[diameter].forEach(function(dvector){
                      g += "G0 Z" + that.clearanceHeight + "\n";
@@ -1137,9 +1164,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             // DIMENSION Milling
             g += "(------ DIMENSION Milling -------)\n";
-            g += "M5 (spindle off)\n";
-            g += "T" + this.toolCount++ + " M6 (set tool to mill dimension " + diaOfEndmill + ")\n";
-            g += "M3 (spindle on)\n";
+            g += this.toolChange('Please setup your cutter tool --url:https://raw.githubusercontent.com/xpix/widget-eagle/master/helpers/tc_cutter.html--');
             g += "F" + this.feedRateDimensions + "\n";
 
 
@@ -1265,7 +1290,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                     
                 g += "G1 X" + x + " Y" + y + "\n";
                 // go up ..     
-                g += "G0 Z" + this.clearanceHeight + "\n";
+                g += "G0 Z" + (z+1) + "\n"; // let 1mm material stay in this tab
 
                 // move to next plunge
                 if(Math.abs(distance.segment.x) > this.PCBHolderLength)
@@ -1274,7 +1299,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                     (distance.segment.y < 0 ? y -= (this.PCBHolderLength + radiusEndmill) : y += (this.PCBHolderLength + radiusEndmill));
 
                 g += "G1 X" + x + " Y" + y + "\n";  // jump and ...
-                g += "G1 Z" + z + "\n";             // ... plunge
+                g += "G1 Z" + z + " F" + this.feedRatePlunge + "\n";
             }
 
             return g;
@@ -1286,6 +1311,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             // move to clearance
             g += "G0 Z" + this.clearanceHeight + "\n";
+
+            g += this.endPosition();
             
             // finalize gcode
             g += "M5 (spindle stop)\n";
@@ -5163,7 +5190,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             var el = $('#' + this.id);
             for(var key in this.options){
                 // read from options, set and trigger change
-                el.find('.' + key).val(this.setValue(this.options[key], key)).trigger('change');
+                el.find('.' + key).val(this.options[key]).trigger('change');
             }
 
             // show/hide body
