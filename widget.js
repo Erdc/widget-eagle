@@ -983,6 +983,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             //  * add difference in input field or variable
             
 
+            g += "G54 (Set main WCS G54 for PCB)\n";
             g += "G0 Z" + this.clearanceHeight + "\n";
             return g;
         },
@@ -1000,7 +1001,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             });
 
             var g = '';
-            g += "(" + comment + ")";
+            g += "(" + comment + ")\n";
             g += "(chilipeppr_pause XTC T" + this.toolnumber + ")\n";
             g += this.touchProbe();
             return g;
