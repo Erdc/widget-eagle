@@ -1086,33 +1086,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             var y = this.YZero;
             return "G0 Z15 X" + x + " Y" + y + " (Move to tool end position)\n";
         },
-        touchProbe: function(){
-            var diaOfEndmill = this.millDiameter;
-            var calcDia = diaOfEndmill*2;
-            var g = "(Move to touchprobe pos)\n";
-            g += "G0 X-" + calcDia + " Y-" + calcDia + "\n";
-            g += "G91\nG38.2 Z-20 F22\nG90\n";
-
-            // TODO: maybe tinyg don't support absolute coordinates set (G10 L20)?
-            g += "G28.3 X" + calcDia + " Y" + calcDia + " Z0\n"; 
-
-            // TODO: Think about a toollength sensor, it's easier to handle but he has a 
-            // difference between the PCB surface and sensor, this diffence we have 
-            // to find at configure our platform and at every new pcb in platform 
-            // toolsensor_zero <=> pcb surface as config param
-            //  http://www.cnccookbook.com/img/OthersProjects/CNCTouchsetter.jpg
-            //  
-            // configure:
-            //  * touch probe PCB surface
-            //  * touch probe tool length sensor
-            //  * add difference in input field or variable
-            
-
-            g += "G54 (Set main WCS G54 for PCB)\n";
-            g += "G0 Z" + this.clearanceHeight + "\n";
-            return g;
-        },
-        toolChange: function(comment, art, tdiameter){
+        toolChange: function(art, tdiameter){
             if(this.toolnumber === undefined || !this.toolnumber)
                 this.toolnumber = 0;
             this.toolnumber++;
@@ -1126,9 +1100,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             });
 
             var g = '';
-            g += "(" + comment + ")\n";
             g += "(chilipeppr_pause XTC T" + this.toolnumber + ")\n";
-            g += this.touchProbe();
             return g;
         },
 
@@ -1155,7 +1127,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
         
         exportGcodeMilling:function(){
             var g = '';
-            g += this.toolChange('set tool to mill isolate signals --url:https://raw.githubusercontent.com/xpix/widget-eagle/master/helpers/tc_signalmill.html--', 'Sink', 0.1);
+            g += this.toolChange('Sink', 0.1);
 
             chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Generate <b>Milling</b> G-Code", "Rendering Isolation g-code mills's.", 1 * 1000);
 
@@ -1257,7 +1229,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // Drilling, first sort to drill diameter and change tool to first diameter
             g += "(------ DRILLING VIAS -------)\n";
             for ( var diameter in this.sortObjByKey(this.drillVias) ){
-               g += this.toolChange('set tool to drill with diameter ' + diameter, 'Drill', diameter);
+               g += this.toolChange('Drill', diameter);
                g += "F" + this.drillFeedrate + "\n"; 
                this.drillVias[diameter].forEach(function(dvector){
                      g += "G0 Z" + that.clearanceHeight + "\n";
@@ -1283,7 +1255,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                // don't drill holes bigger as max diameter
                if(diameter > that.drillMaxDiameter)
                   break;
-               g += this.toolChange('set tool to drill with diameter ' + diameter, 'Drill', diameter);
+               g += this.toolChange('Drill', diameter);
                g += "F" + this.drillFeedrate + "\n"; 
                this.drillPads[diameter].forEach(function(dvector){
                      g += "G0 Z" + that.clearanceHeight + "\n";
@@ -1306,7 +1278,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             // DIMENSION Milling
             g += "(------ DIMENSION Milling -------)\n";
-            g += this.toolChange('Please setup your cutter tool --url:https://raw.githubusercontent.com/xpix/widget-eagle/master/helpers/tc_cutter.html--', 'Mill', diaOfEndmill);
+            g += this.toolChange('Mill', diaOfEndmill);
             g += "F" + this.feedRateDimensions + "\n";
 
 
