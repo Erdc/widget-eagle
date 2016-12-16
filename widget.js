@@ -1242,7 +1242,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // this.PCBHolderCount = 1; 
             // this.PCBHolderLength= 1; // mm
 
-            var defmove = "G1 X" + point.X + " Y" + point.Y + "\n";
+            var defmove = "G1 X" + point.X + " Y" + point.Y + " F" + this.feedRateDimensions + "\n";
             if(this.PCBHolderCount == 0 || lastpoint.X == null)
                 return defmove;            
                 
@@ -1286,7 +1286,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 if(Math.abs(distance.segment.y) > this.PCBHolderLength)
                     (distance.segment.y < 0 ? y -= (this.PCBHolderLength + radiusEndmill) : y += (this.PCBHolderLength + radiusEndmill));
 
-                g += "G1 X" + x + " Y" + y + "\n";  // jump and ...
+                g += "G1 X" + x + " Y" + y + " F" + this.feedRateDimensions + "\n";  // jump and ...
                 g += "G1 Z" + z + " F" + this.feedRatePlunge + "\n";
             }
 
