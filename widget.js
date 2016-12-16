@@ -1208,7 +1208,6 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 }
                 g += "(step down " + this.stepDownDimensions + " for new z " + newZ + ")\n";
                 g += "G1 Z" + newZ + " F" + this.feedRatePlunge + "\n";
-                g += "F" + this.feedRateDimensions + "\n";
                 console.log("this.clipperDimension:", this.clipperDimension);
                 
                 // we have dimensions defined as linePieces so must eliminate duplicates
@@ -1277,7 +1276,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 else
                     y += distance.segment.y;
                     
-                g += "G1 X" + x + " Y" + y + "\n";
+                g += "G1 X" + x + " Y" + y + " F" + this.feedRateDimensions + "\n";
                 // go up ..     
                 g += "G0 Z" + (z+1) + "\n"; // let 1mm material stay in this tab
 
