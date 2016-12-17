@@ -695,23 +695,6 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // send event off as if the file was drag/dropped
             chilipeppr.publish("/com-chilipeppr-elem-dragdrop/ondropped", gcodetxt, info);
             
-            // convert the color on the end mill path because it's irrelevant now based
-            // on the gcode being shown by the 3d viewer
-            this.threePathEndMill.forEach(function(threeObj) {
-                console.log("tweaking endmill path now that we're sending gcode. threeObj:", threeObj);
-                if (threeObj.children.length > 0) {
-                    threeObj.children[0].material.opacity = 0.1;
-                    threeObj.children[0].material.color = 0x000000;
-                    /*threeObj.children.forEach(function(threeObjChild) {
-                        threeObjChild.material.color = 0x000000;
-                        threeObjChild.material.opacity = 0.1;
-                    });*/
-                } else {
-                    threeObj.material.color = 0x000000;
-                    threeObj.material.opacity = 0.1;
-                }
-            }, this);
-            
             // or use alternate pubsub
             // "/com-chilipeppr-elem-dragdrop/loadGcode"
             var that = this;
