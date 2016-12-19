@@ -393,6 +393,10 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 that.depthOfSignalMilling = evt.currentTarget.valueAsNumber;
                 console.log("that.depthOfSignalMilling:", that.depthOfSignalMilling);
             });
+            el.find('.trace-rpm').change(function(evt) {
+                console.log("evt:", evt);
+                that.rpm = evt.currentTarget.valueAsNumber;
+            });
             el.find('.trace-fr').change(function(evt) {
                 console.log("evt:", evt);
                 that.feedRateSignals = evt.currentTarget.valueAsNumber;
@@ -899,6 +903,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
         clearanceHeight: 1.0, // move z to clearance
         // 1 oz = 0.035mm, 2 oz = 0.07mm, 3 oz = 0.105mm
         depthOfSignalMilling: -0.1, // cutting how deep?
+        rpm: 12000,
         feedRatePlunge: 30, // plunging into FR4 copper
         feedRateSignals: 80, // feedrate for milling signals,pads,smds,vias
         feedRateDimensions: 100,
@@ -968,7 +973,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             g += "G21 (mm mode)\n";
             g += "G90 (abs mode)\n";
             g += "G28.2 X0 Y0 Z0 (Home the machine)\n";
-            g += "M3 S12000 (TODO: absolute value)\n";
+            g += "M3 S" + this.rpm + "\n";
             return g;
         },
         
