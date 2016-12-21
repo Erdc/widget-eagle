@@ -758,8 +758,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 this.clearEagleBrd();
                 this.clear3dViewer();
                 this.tools = [];
-                this.toolCount = 0;
-                
+
                 // create board
                 this.eagle = new EagleCanvas('eagle-canvas');
                 this.eagle.loadText(file);
@@ -1309,8 +1308,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // path and move to next.
             // we also need to remove redundant moves.
             
-            this.toolCount  = 0;
             this.tools      = [];
+            this.toolnumber = 0;
 
             var i = 100;
             this.addGcode(i, this.exportGcodeHeader()     );
