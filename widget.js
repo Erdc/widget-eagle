@@ -965,6 +965,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
 
             var g = '';
             g += "(chilipeppr_pause XTC T" + this.toolnumber + ")\n";
+            g += "M3 S" + this.rpm + "\n";
             return g;
         },
 
