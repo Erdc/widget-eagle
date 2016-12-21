@@ -757,6 +757,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 this.activeLayer = 'Top';
                 this.clearEagleBrd();
                 this.clear3dViewer();
+                this.tools = [];
+                this.toolCount = 0;
                 
                 // create board
                 this.eagle = new EagleCanvas('eagle-canvas');
