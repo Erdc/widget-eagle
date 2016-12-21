@@ -518,6 +518,10 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 that.depthOfSignalMilling = evt.currentTarget.valueAsNumber;
                 console.log("that.depthOfSignalMilling:", that.depthOfSignalMilling);
             });
+            el.find('.trace-rpm').change(function(evt) {
+                console.log("evt:", evt);
+                that.rpm = evt.currentTarget.valueAsNumber;
+            });
             el.find('.trace-fr').change(function(evt) {
                 console.log("evt:", evt);
                 that.feedRateSignals = evt.currentTarget.valueAsNumber;
@@ -878,7 +882,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
                 this.activeLayer = 'Top';
                 this.clearEagleBrd();
                 this.clear3dViewer();
-                
+                this.tools = [];
+
                 // create board
                 this.eagle = new EagleCanvas('eagle-canvas');
                 this.eagle.loadText(file);
@@ -1024,6 +1029,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
         clearanceHeight: 1.0, // move z to clearance
         // 1 oz = 0.035mm, 2 oz = 0.07mm, 3 oz = 0.105mm
         depthOfSignalMilling: -0.1, // cutting how deep?
+        rpm: 12000,
         feedRatePlunge: 30, // plunging into FR4 copper
         feedRateSignals: 80, // feedrate for milling signals,pads,smds,vias
         feedRateDimensions: 100,
@@ -1093,7 +1099,7 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             g += "G21 (mm mode)\n";
             g += "G90 (abs mode)\n";
             g += "G28.2 X0 Y0 Z0 (Home the machine)\n";
-            g += "M3 S12000 (TODO: absolute value)\n";
+            g += "M3 S" + this.rpm + "\n";
             return g;
         },
         
@@ -1427,8 +1433,8 @@ onAddGcode : function(addGcodeCallback, gcodeParts, eagleWidget, helpDesc){
             // path and move to next.
             // we also need to remove redundant moves.
             
-            this.toolCount  = 0;
             this.tools      = [];
+            this.toolnumber = 0;
 
             var i = 100;
             this.addGcode(i, this.exportGcodeHeader()     );
@@ -6164,6 +6170,14 @@ EagleCanvas.prototype.mirrorLayer = function (layerIdx) {
                             <li>2 oz copper : <b>-0.1</b>mm depth (Most popular. 0.07mm is typical thickness)</li>
                             <li>3 oz copper : <b>-0.15</b>mm depth (0.105mm is typical thickness)</li>
                         </ul>
+                    </p>
+
+                    Spindle roations per minute (RPM)
+                    <div class="input-group">
+                        <input class="form-control trace-rpm" type="number" placeholder="RPM" value="12000" />
+                        <div class="input-group-addon">rpm/min</div>
+                    </div>
+                    <p class="descriptive-text">The taret rotations per minute.
                     </p>
 
                     Feedrate for Milling Traces
